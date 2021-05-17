@@ -115,8 +115,14 @@
     <Compile Include="Common\PartialCopyExtensions.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="Notes\Model\Note.cs" />
-    <Compile Include="Notes\Model\NoteDetail.cs" />
+    <Compile Include="Notes\NoteModel.cs" />
+    <Compile Include="Notes\Redux\Actions\LoadNoteDetailAction.cs" />
+    <Compile Include="Notes\Redux\Actions\SaveNoteAction.cs" />
+    <Compile Include="Notes\Redux\Effects\SaveNoteEffect.cs" />
+    <Compile Include="Notes\Redux\Effects\LoadNoteDetailEffect.cs" />
+    <Compile Include="Notes\Redux\Events\NoteDetailLoadedEvent.cs" />
+    <Compile Include="Notes\Redux\Events\NoteUpdatedEvent.cs" />
+    <Compile Include="Notes\Redux\Model\Note.cs" />
     <Compile Include="Notes\Redux\Actions\AddNoteAction.cs" />
     <Compile Include="Notes\Redux\Actions\DeleteNotesAction.cs" />
     <Compile Include="Notes\Redux\Actions\DeleteNoteAction.cs" />

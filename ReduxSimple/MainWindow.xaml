@@ -6,20 +6,35 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
         <StackPanel Orientation="Vertical">
             <Button Command="{Binding AddNoteCommand}">Add note</Button>
             <Button Command="{Binding DeleteAllNotesCommand}">Delete all notes</Button>
+        </StackPanel>
 
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
             <ListView ItemsSource="{Binding Notes}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="10" Text="{Binding Text}"></TextBlock>
-                            <Button Command="{Binding DataContext.DeleteNoteCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}">Delete</Button>
+                        <StackPanel Orientation="Vertical">
+                            <Label>Text:</Label>
+                            <TextBox Margin="10" Text="{Binding Text}"></TextBox>
+                            <Label>Detail Text:</Label>
+                            <TextBox Margin="10" Text="{Binding DetailText}"></TextBox>
+                            <Button Command="{Binding DataContext.LoadNoteDetailCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}">Load details</Button>
+
+                            <StackPanel Margin="10" Orientation="Horizontal">
+                                <Button Margin="0 0 10 0" Command="{Binding DataContext.SaveNoteCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}">Save</Button>
+                                <Button Command="{Binding DataContext.DeleteNoteCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}">Delete</Button>
+                            </StackPanel>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>

@@ -40,25 +40,25 @@ namespace ReduxSimple.Redux.DevTools
             UndoButton.Click += (sender, e) => store.Undo();
             RedoButton.Click += (sender, e) => store.Redo();
             ResetButton.Click += (sender, e) => store.Reset();
-
             PlayPauseButton.Click += (sender, e) => this.devToolsStore.Dispatch(new TogglePlayPauseAction());
+
+            var sliderUpdating = false;
 
             Slider.ValueChanged += (sender, e) =>
                 {
-                    if (!this.Slider.IsFocused)
+                    if (!this.Slider.IsFocused || sliderUpdating)
                     {
                         return;
                     }
 
-                    FocusManager.SetFocusedElement(FocusManager.GetFocusScope(this.Slider), null);
-                    Keyboard.ClearFocus();
+                    //FocusManager.SetFocusedElement(FocusManager.GetFocusScope(this.Slider), null);
+                    //Keyboard.ClearFocus();
 
                     this.devToolsStore.Dispatch(new MoveToPositionAction { Position = (int)e.NewValue });
                 };
 
             // Observe changes on DevTools state
             Observable.CombineLatest(
-                this.devToolsStore.Select(SelectCurrentPosition),
                 this.devToolsStore.Select(SelectPlaySessionActive),
                 this.devToolsStore.Select(SelectMaxPosition),
                 store.ObserveCanUndo(),
@@ -68,10 +68,7 @@ namespace ReduxSimple.Redux.DevTools
                 .ObserveOnDispatcher()
                 .Subscribe(x =>
                 {
-                    var (currentPosition, playSessionActive, maxPosition, canUndo, canRedo) = x;
-
-                    Slider.Value = currentPosition;
-                    Slider.Maximum = maxPosition;
+                    var (playSessionActive, maxPosition, canUndo, canRedo) = x;
 
                     if (playSessionActive)
                     {
@@ -91,6 +88,22 @@ namespace ReduxSimple.Redux.DevTools
                         Slider.IsEnabled = maxPosition > 0;
                         PlayPauseButton.Content = "\xE768";
                     }
+                });
+
+            Observable.CombineLatest(
+                this.devToolsStore.Select(SelectCurrentPosition),
+                this.devToolsStore.Select(SelectMaxPosition),
+                Tuple.Create
+            )
+                .ObserveOnDispatcher()
+                .Subscribe(x =>
+                {
+                    var (currentPosition, maxPosition) = x;
+
+                    sliderUpdating = true;
+                    Slider.Value = currentPosition;
+                    Slider.Maximum = maxPosition;
+                    sliderUpdating = false;
                 });
 
             this.devToolsStore.Select(
